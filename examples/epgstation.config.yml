@@ -1,0 +1,7 @@
+# EPGStation の既存 config.yml に、以下の3項目を追記・置換します。
+# ファイル全体をこの内容で置き換えないでください。
+# 同じキーが既にある場合は、旧通知コマンドをこちらへ置き換えます。
+# Addtion は EPGStation の正式な設定名です（Addition ではありません）。
+reserveNewAddtionCommand: 'node /opt/epgs-to-slack/notify.mjs reserve'
+recordingStartCommand: 'node /opt/epgs-to-slack/notify.mjs start'
+recordingFinishCommand: 'node /opt/epgs-to-slack/notify.mjs end'

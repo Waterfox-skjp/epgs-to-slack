@@ -1,0 +1,7 @@
+# docker-mirakurun-epgstation の docker-compose.yml と同じフォルダーに
+# compose.override.yml としてコピーします。
+# 起動: docker compose -f docker-compose.yml -f compose.override.yml up -d epgstation
+services:
+  epgstation:
+    volumes:
+      - ./epgs-to-slack:/opt/epgs-to-slack:ro
