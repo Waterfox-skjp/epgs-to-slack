@@ -19,7 +19,7 @@ const PROGRAM = {
 };
 // テスト専用のダミー。実際の Slack に送信しない。
 const WEBHOOK = 'https://hooks.slack.com/services/TEST/TEST/not-a-real-webhook';
-const TIME = '21:00:00～21:30:00［NHK総合］';
+const TIME = '21:00～21:30［NHK総合］';
 
 function tempDirectory(t) {
   const folder = mkdtempSync(join(tmpdir(), 'epgs-to-slack-test-'));
@@ -63,17 +63,29 @@ test('終了メッセージは指定の書式を使う', () => {
   assert.equal(buildMessage('end', PROGRAM), ':black_square_for_stop: *サンプル番組*\n```' + TIME + '```');
 });
 
+test('秒が含まれる時刻も分まで表示する', () => {
+  const program = {
+    ...PROGRAM,
+    STARTAT: String(Date.parse('2026-10-26T18:30:45+09:00')),
+    ENDAT: String(Date.parse('2026-10-26T20:50:59+09:00')),
+    CHANNELNAME: 'テレ東',
+  };
+  for (const event of ['reserve', 'start', 'end']) {
+    assert.ok(buildMessage(event, program).includes('18:30～20:50［テレ東］'));
+  }
+});
+
 test('日付をまたぐ録画と午前0時を表示できる', () => {
   const message = buildMessage('start', {
     ...PROGRAM,
     STARTAT: String(Date.parse('2026-10-26T23:30:00+09:00')),
     ENDAT: String(Date.parse('2026-10-27T00:00:00+09:00')),
   });
-  assert.ok(message.includes('23:30:00～00:00:00'));
+  assert.ok(message.includes('23:30～00:00'));
 });
 
 test('タイムゾーンを明示的に指定できる', () => {
-  assert.ok(buildMessage('start', PROGRAM, 'UTC').includes('12:00:00～12:30:00'));
+  assert.ok(buildMessage('start', PROGRAM, 'UTC').includes('12:00～12:30'));
 });
 
 test('番組名・放送局・概要が欠けても undefined や null を表示しない', () => {
