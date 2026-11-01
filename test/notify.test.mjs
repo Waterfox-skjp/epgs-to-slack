@@ -307,7 +307,7 @@ test('プレビュー用の番組データと実装が一致する', () => {
 
 test('EPGStation 設定例は公式の3種類のフックとイベントを対応させる', () => {
   const config = readFileSync(join(ROOT, 'examples/epgstation.config.yml'), 'utf8');
-  assert.match(config, /^reserveNewAddtionCommand: 'node \/opt\/epgs-to-slack\/notify\.mjs reserve'$/m);
-  assert.match(config, /^recordingStartCommand: 'node \/opt\/epgs-to-slack\/notify\.mjs start'$/m);
-  assert.match(config, /^recordingFinishCommand: 'node \/opt\/epgs-to-slack\/notify\.mjs end'$/m);
+  assert.match(config, /^reserveNewAddtionCommand: '\/usr\/local\/bin\/node \/opt\/epgs-to-slack\/notify\.mjs reserve'$/m);
+  assert.match(config, /^recordingStartCommand: '\/usr\/local\/bin\/node \/opt\/epgs-to-slack\/notify\.mjs start'$/m);
+  assert.match(config, /^recordingFinishCommand: '\/usr\/local\/bin\/node \/opt\/epgs-to-slack\/notify\.mjs end'$/m);
 });

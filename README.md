@@ -74,15 +74,22 @@ Compose 本体を変更したくない場合は [examples/compose.override.yml](
 
 ### 4. 通知コマンドを設定
 
-`epgstation/config/config.yml` に、[設定例](examples/epgstation.config.yml)の 3 項目を追加します。同じキーが既にある場合は、その値を置き換えます。config.yml 全体をこの内容で上書きしないでください。
+EPGStation の外部コマンドでは Node.js の絶対パスを指定します。コンテナ内のパスを確認してください。
+
+```sh
+docker compose exec epgstation sh -c 'command -v node'
+```
+
+`epgstation/config/config.yml` に、[設定例](examples/epgstation.config.yml)の 3 項目を追加します。次の `/usr/local/bin/node` は例です。上記の結果が異なる場合は、3 行とも実際のパスに置き換えてください。同じキーが既にある場合は、その値を置き換えます。config.yml 全体をこの内容で上書きしないでください。
 
 ```yaml
-reserveNewAddtionCommand: 'node /opt/epgs-to-slack/notify.mjs reserve'
-recordingStartCommand: 'node /opt/epgs-to-slack/notify.mjs start'
-recordingFinishCommand: 'node /opt/epgs-to-slack/notify.mjs end'
+reserveNewAddtionCommand: '/usr/local/bin/node /opt/epgs-to-slack/notify.mjs reserve'
+recordingStartCommand: '/usr/local/bin/node /opt/epgs-to-slack/notify.mjs start'
+recordingFinishCommand: '/usr/local/bin/node /opt/epgs-to-slack/notify.mjs end'
 ```
 
 `Addtion` は EPGStation 側の正式なキー名です。`Addition` に直すと通知されません。Discord 版を呼び出している同じ項目を置き換えることで移行できます。
+ログに `CmdBinIsNotFound` や `stat 'node'` が出る場合は、設定した Node.js の絶対パスを確認してください。
 
 ### 5. 反映と確認
 
@@ -98,6 +105,14 @@ docker compose up -d epgstation
 docker compose exec epgstation node \
   --env-file=/opt/epgs-to-slack/examples/program.env \
   /opt/epgs-to-slack/notify.mjs reserve --dry-run
+```
+
+Slack への接続も確認する場合は、同じコマンドから `--dry-run` を外します。サンプル番組の通知が 1 件送信されます。
+
+```sh
+docker compose exec epgstation node \
+  --env-file=/opt/epgs-to-slack/examples/program.env \
+  /opt/epgs-to-slack/notify.mjs reserve
 ```
 
 続いて実際の番組を 1 件予約し、予約・録画開始・録画終了の通知を確認します。ルールによる自動予約も、EPGStation が予約追加フックを実行した時に通知対象になります。
