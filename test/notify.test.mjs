@@ -52,7 +52,17 @@ async function server(t, handler) {
 
 test('予約メッセージは指定の絵文字・日付・時刻・放送局・概要を使う', () => {
   assert.equal(buildMessage('reserve', PROGRAM),
-    ':new: *サンプル番組*\n```2026/10/26月曜日 ' + TIME + '\n番組概要のサンプルです。```');
+    ':new: *サンプル番組*\n```2026/10/26(月) ' + TIME + '\n番組概要のサンプルです。```');
+});
+
+test('指定したタイムゾーンの日付と曜日を表示する', () => {
+  const program = {
+    ...PROGRAM,
+    STARTAT: String(Date.parse('2026-11-05T00:30:00+09:00')),
+    ENDAT: String(Date.parse('2026-11-05T01:00:00+09:00')),
+  };
+  assert.ok(buildMessage('reserve', program).includes('2026/11/05(木)'));
+  assert.ok(buildMessage('reserve', program, 'UTC').includes('2026/11/04(水)'));
 });
 
 test('開始メッセージは指定の書式を使う', () => {
