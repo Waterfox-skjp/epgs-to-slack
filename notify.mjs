@@ -85,7 +85,7 @@ export function buildMessage(event, env, timeZone = 'Asia/Tokyo') {
   let timeFormatter;
   try {
     dateFormatter = new Intl.DateTimeFormat('ja-JP', {
-      timeZone, year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'long',
+      timeZone, year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short',
     });
     timeFormatter = new Intl.DateTimeFormat('ja-JP', {
       timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
